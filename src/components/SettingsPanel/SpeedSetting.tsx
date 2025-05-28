@@ -7,13 +7,14 @@ export function SpeedSetting({ speed, setSpeed }: SpeedSettingProps) {
   return (
     <div>
       <label htmlFor="speed" className="block text-sm font-medium mb-2">
-        이동 속도: {speed}px/sec
+        이동 속도
       </label>
       <input
         type="range"
         id="speed"
-        min="20"
-        max="200"
+        min="100"
+        max="300"
+        step="25"
         value={speed}
         onChange={e => setSpeed(Number(e.target.value))}
         className="w-full"

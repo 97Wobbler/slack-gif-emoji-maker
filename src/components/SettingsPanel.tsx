@@ -56,36 +56,42 @@ export function SettingsPanel({
   handleGenerate
 }: SettingsPanelProps) {
   return (
-    <section className="w-80 bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-lg font-medium mb-6">설정</h2>
-      <div className="space-y-6">
-        <TextSetting text={text} setText={setText} />
-        <TextColorSetting textColor={textColor} setTextColor={setTextColor} />
-        <FontSizeSetting fontSize={fontSize} setFontSize={setFontSize} />
-        <VerticalOffsetSetting verticalOffset={verticalOffset} setVerticalOffset={setVerticalOffset} />
-        <BackgroundSetting
-          bgType={bgType}
-          setBgType={setBgType}
-          bgColor={bgColor}
-          setBgColor={setBgColor}
-          bgGradient={bgGradient}
-          setBgGradient={setBgGradient}
-        />
-        <ColorRandomizer
-          setTextColor={setTextColor}
-          setBgColor={setBgColor}
-          setBgGradient={setBgGradient}
-          bgType={bgType}
-        />
-        <SpeedSetting speed={speed} setSpeed={setSpeed} />
-        <GapSetting gap={gap} setGap={setGap} />
-        <OutputInfo />
-        <ExportButton
-          isGenerating={isGenerating}
-          handleGenerate={handleGenerate}
-          text={text}
-        />
-      </div>
-    </section>
+    <div className="h-[calc(100vh-var(--header-height))] pt-[var(--header-height)]">
+      <section className="bg-white shadow-md h-full flex flex-col">
+        <div className="p-6 flex-1 overflow-y-auto">
+          <h2 className="text-lg font-medium mb-6">설정</h2>
+          <div className="space-y-6">
+            <TextSetting text={text} setText={setText} />
+            <TextColorSetting textColor={textColor} setTextColor={setTextColor} />
+            <FontSizeSetting fontSize={fontSize} setFontSize={setFontSize} />
+            <VerticalOffsetSetting verticalOffset={verticalOffset} setVerticalOffset={setVerticalOffset} />
+            <BackgroundSetting
+              bgType={bgType}
+              setBgType={setBgType}
+              bgColor={bgColor}
+              setBgColor={setBgColor}
+              bgGradient={bgGradient}
+              setBgGradient={setBgGradient}
+            />
+            <ColorRandomizer
+              setTextColor={setTextColor}
+              setBgColor={setBgColor}
+              setBgGradient={setBgGradient}
+              bgType={bgType}
+            />
+            <SpeedSetting speed={speed} setSpeed={setSpeed} />
+            <GapSetting gap={gap} setGap={setGap} />
+          </div>
+        </div>
+        <div className="p-6 border-t border-gray-100">
+          <ExportButton
+            isGenerating={isGenerating}
+            handleGenerate={handleGenerate}
+            text={text}
+          />
+          <OutputInfo />
+        </div>
+      </section>
+    </div>
   )
 } 

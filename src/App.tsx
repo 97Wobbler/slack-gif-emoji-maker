@@ -18,7 +18,7 @@ function App() {
   const [bgType, setBgType] = useState<BackgroundConfig['type']>('solid')
   const [bgColor, setBgColor] = useState('#ffffff')
   const [bgGradient, setBgGradient] = useState<[string, string]>(['#667eea', '#764ba2'])
-  const [speed, setSpeed] = useState(50)
+  const [speed, setSpeed] = useState(200)
   const [gap, setGap] = useState(50)
   const [fontSize, setFontSize] = useState(80)
   const [verticalOffset, setVerticalOffset] = useState(0)
@@ -60,32 +60,36 @@ function App() {
   }, [text, textConfig, bgConfig, showToast])
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50" style={{ "--header-height": "2.5rem" } as React.CSSProperties}>
       <Header />
-      <main className="flex flex-row items-start w-full min-h-[600px] justify-center gap-12 px-10 py-12">
-        <PreviewPanel textConfig={textConfig} bgConfig={bgConfig} />
-        <SettingsPanel
-          text={text}
-          setText={setText}
-          textColor={textColor}
-          setTextColor={setTextColor}
-          fontSize={fontSize}
-          setFontSize={setFontSize}
-          verticalOffset={verticalOffset}
-          setVerticalOffset={setVerticalOffset}
-          bgType={bgType}
-          setBgType={setBgType}
-          bgColor={bgColor}
-          setBgColor={setBgColor}
-          bgGradient={bgGradient}
-          setBgGradient={setBgGradient}
-          speed={speed}
-          setSpeed={setSpeed}
-          gap={gap}
-          setGap={setGap}
-          isGenerating={isGenerating}
-          handleGenerate={handleGenerate}
-        />
+      <main className="pt-[var(--header-height)] flex">
+        <div className="flex-1 flex justify-center items-center">
+          <PreviewPanel textConfig={textConfig} bgConfig={bgConfig} />
+        </div>
+        <div className="w-80 bg-white">
+          <SettingsPanel
+            text={text}
+            setText={setText}
+            textColor={textColor}
+            setTextColor={setTextColor}
+            fontSize={fontSize}
+            setFontSize={setFontSize}
+            verticalOffset={verticalOffset}
+            setVerticalOffset={setVerticalOffset}
+            bgType={bgType}
+            setBgType={setBgType}
+            bgColor={bgColor}
+            setBgColor={setBgColor}
+            bgGradient={bgGradient}
+            setBgGradient={setBgGradient}
+            speed={speed}
+            setSpeed={setSpeed}
+            gap={gap}
+            setGap={setGap}
+            isGenerating={isGenerating}
+            handleGenerate={handleGenerate}
+          />
+        </div>
       </main>
       {ToastComponent}
     </div>

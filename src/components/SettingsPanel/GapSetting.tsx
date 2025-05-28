@@ -14,6 +14,7 @@ export function GapSetting({ gap, setGap }: GapSettingProps) {
         id="gap"
         min="0"
         max="100"
+        step="5"
         value={gap}
         onChange={e => setGap(Number(e.target.value))}
         className="w-full"
