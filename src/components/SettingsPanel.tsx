@@ -87,7 +87,6 @@ export function SettingsPanel({
           <ExportButton
             isGenerating={isGenerating}
             handleGenerate={handleGenerate}
-            text={text}
           />
           <OutputInfo />
         </div>
