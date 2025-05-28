@@ -123,7 +123,7 @@ export class GifGenerator {
         reject(err);
       });
 
-      this.gif.on('progress', (progress: number) => {
+      this.gif.on('progress', (_progress: number) => {
       });
 
       this.gif.render();
