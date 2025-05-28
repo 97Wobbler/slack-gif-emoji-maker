@@ -5,6 +5,7 @@ export interface TextConfig {
   speed: number; // px/sec
   gap: number; // 텍스트 간격 (%)
   fontSize: number; // 글자 크기 (%)
+  verticalOffset: number; // 수직 오프셋 (%)
 }
 
 export interface BackgroundConfig {

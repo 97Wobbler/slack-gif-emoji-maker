@@ -47,7 +47,12 @@ export class GifGenerator {
     this.ctx.font = `bold ${fontSize}px "${text.font}"`;
     this.ctx.fillStyle = text.color;
     this.ctx.textBaseline = 'middle';
-    this.ctx.fillText(text.text, x, this.canvas.height / 2);
+    
+    // 수직 오프셋 계산 (캔버스 높이의 50%에서 시작 + 오프셋 적용)
+    const baseY = this.canvas.height / 2;
+    const offsetY = baseY + (this.canvas.height * (text.verticalOffset / 100));
+    
+    this.ctx.fillText(text.text, x, offsetY);
   }
 
   private getTextWidth(text: TextConfig): number {
@@ -59,8 +64,11 @@ export class GifGenerator {
   async generateGif(
     textConfig: TextConfig,
     bgConfig: BackgroundConfig,
-    gifConfig: GifConfig
+    gifConfig?: GifConfig
   ): Promise<Blob> {
+    // gifConfig가 없으면 기본값 사용
+    const config = gifConfig || { width: 128, height: 128, fps: 15 };
+    
     return new Promise((resolve, reject) => {
       const textWidth = this.getTextWidth(textConfig);
       const gapPixels = this.canvas.width * (textConfig.gap / 100);
@@ -71,13 +79,13 @@ export class GifGenerator {
       
       // 한 사이클이 완료되는 시간 계산 (unitWidth만큼 이동하는 시간)
       const cycleDuration = unitWidth / textConfig.speed; // seconds
-      const frameCount = Math.ceil(cycleDuration * gifConfig.fps);
+      const frameCount = Math.ceil(cycleDuration * config.fps);
       
       for (let i = 0; i < frameCount; i++) {
         this.drawBackground(bgConfig);
         
         // 현재 프레임의 애니메이션 오프셋
-        const currentTime = (i / gifConfig.fps);
+        const currentTime = (i / config.fps);
         const distance = currentTime * textConfig.speed;
         const offset = distance % unitWidth;
         
@@ -91,10 +99,20 @@ export class GifGenerator {
           }
         }
         
-        this.gif.addFrame(this.ctx, { copy: true, delay: 1000 / gifConfig.fps });
+        this.gif.addFrame(this.ctx, { copy: true, delay: 1000 / config.fps });
       }
 
       this.gif.on('finished', (blob: Blob) => {
+        // 다운로드 처리
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${textConfig.text}-emoji.gif`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
         resolve(blob);
       });
 

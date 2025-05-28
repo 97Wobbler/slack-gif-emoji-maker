@@ -55,7 +55,12 @@ export function Preview({ textConfig, bgConfig, displaySize = CANVAS_SIZE }: Pre
       ctx.font = `bold ${fontSize}px "${textConfig.font}"`;
       ctx.fillStyle = textConfig.color;
       ctx.textBaseline = 'middle';
-      ctx.fillText(textConfig.text, x, CANVAS_SIZE / 2);
+      
+      // 수직 오프셋 계산 (캔버스 높이의 50%에서 시작 + 오프셋 적용)
+      const baseY = CANVAS_SIZE / 2;
+      const offsetY = baseY + (CANVAS_SIZE * (textConfig.verticalOffset / 100));
+      
+      ctx.fillText(textConfig.text, x, offsetY);
     };
 
     // 텍스트 너비 및 간격 계산
