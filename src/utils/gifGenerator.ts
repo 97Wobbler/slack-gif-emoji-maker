@@ -14,11 +14,11 @@ export class GifGenerator {
     this.ctx = this.canvas.getContext('2d', { willReadFrequently: true })!;
     
     this.gif = new GIF({
-      workers: 2,
+      workers: 1,
       quality: 10,
       width: config.width,
       height: config.height,
-      workerScript: '/gif.worker.js'
+      workerScript: '/slack-gif-emoji-maker/gif.worker.js'
     });
   }
 
@@ -82,7 +82,9 @@ export class GifGenerator {
       
       // 한 사이클이 완료되는 시간 계산 (unitWidth만큼 이동하는 시간)
       const cycleDuration = unitWidth / textConfig.speed; // seconds
-      const frameCount = Math.ceil(cycleDuration * config.fps);
+      const frameCount = Math.min(Math.ceil(cycleDuration * config.fps), 60); // 최대 60프레임으로 제한
+      
+      console.log(`GIF 생성 시작: ${frameCount}프레임, ${cycleDuration.toFixed(2)}초 애니메이션`);
       
       for (let i = 0; i < frameCount; i++) {
         this.drawBackground(bgConfig);
@@ -106,6 +108,7 @@ export class GifGenerator {
       }
 
       this.gif.on('finished', (blob: Blob) => {
+        console.log('GIF 생성 완료');
         // 다운로드 처리
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -120,9 +123,15 @@ export class GifGenerator {
       });
 
       this.gif.on('error', (err: Error) => {
+        console.error('GIF 생성 오류:', err);
         reject(err);
       });
 
+      this.gif.on('progress', (progress: number) => {
+        console.log(`GIF 진행률: ${Math.round(progress * 100)}%`);
+      });
+
+      console.log('GIF 렌더링 시작...');
       this.gif.render();
     });
   }
