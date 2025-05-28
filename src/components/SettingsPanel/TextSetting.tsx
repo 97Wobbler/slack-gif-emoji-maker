@@ -13,7 +13,7 @@ export function TextSetting({ text, setText }: TextSettingProps) {
         value={text}
         onChange={e => setText(e.target.value)}
         className="w-full px-3 py-2 border rounded-md"
-        placeholder="슬라이딩할 텍스트를 입력하세요"
+        placeholder="안녕하세요"
       />
     </div>
   )

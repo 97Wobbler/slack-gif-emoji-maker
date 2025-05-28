@@ -24,7 +24,7 @@ function App() {
   const [isGenerating, setIsGenerating] = useState(false)
 
   const textConfig: TextConfig = {
-    text: text || '미리보기 텍스트',
+    text: text || '안녕하세요',
     color: textColor,
     font: 'Pretendard Variable',
     speed,

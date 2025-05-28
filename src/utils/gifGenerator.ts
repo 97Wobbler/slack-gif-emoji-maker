@@ -1,5 +1,6 @@
 import GIF from 'gif.js';
 import type { TextConfig, BackgroundConfig, GifConfig } from '../types';
+import { calculateOptimalVerticalOffset, getOptimalTextBaseline } from './textAlignment';
 
 export class GifGenerator {
   private canvas: HTMLCanvasElement;
@@ -34,7 +35,7 @@ export class GifGenerator {
     }
 
     if (bg.type === 'gradient' && bg.gradientColors) {
-      const gradient = this.ctx.createLinearGradient(0, 0, this.canvas.width, 0);
+      const gradient = this.ctx.createLinearGradient(0, 0, this.canvas.width, this.canvas.height);
       gradient.addColorStop(0, bg.gradientColors[0]);
       gradient.addColorStop(1, bg.gradientColors[1]);
       this.ctx.fillStyle = gradient;
@@ -46,11 +47,13 @@ export class GifGenerator {
     const fontSize = this.canvas.height * (text.fontSize / 100);
     this.ctx.font = `bold ${fontSize}px "${text.font}"`;
     this.ctx.fillStyle = text.color;
-    this.ctx.textBaseline = 'middle';
+    this.ctx.textBaseline = getOptimalTextBaseline(text.text);
     
-    // 수직 오프셋 계산 (캔버스 높이의 50%에서 시작 + 오프셋 적용)
+    // 수직 오프셋 계산 (캔버스 높이의 50%에서 시작 + 사용자 오프셋 + 동적 조정)
     const baseY = this.canvas.height / 2;
-    const offsetY = baseY + (this.canvas.height * (text.verticalOffset / 100));
+    const userOffset = this.canvas.height * (text.verticalOffset / 100);
+    const dynamicOffset = calculateOptimalVerticalOffset(text.text, 0);
+    const offsetY = baseY + userOffset + dynamicOffset;
     
     this.ctx.fillText(text.text, x, offsetY);
   }

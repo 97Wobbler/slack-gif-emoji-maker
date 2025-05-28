@@ -1,3 +1,4 @@
+import { ColorInput } from './ColorInput'
 import type { BackgroundConfig } from '../../types'
 
 interface BackgroundSettingProps {
@@ -43,39 +44,27 @@ export function BackgroundSetting({ bgType, setBgType, bgColor, setBgColor, bgGr
         </label>
       </div>
       {bgType === 'solid' && (
-        <div>
-          <label htmlFor="bgColor" className="block text-sm font-medium mb-2">배경 색상</label>
-          <input
-            type="color"
-            id="bgColor"
-            value={bgColor}
-            onChange={e => setBgColor(e.target.value)}
-            className="w-full h-10 rounded-md cursor-pointer"
-          />
-        </div>
+        <ColorInput
+          label="배경 색상"
+          value={bgColor}
+          onChange={setBgColor}
+          id="bgColor"
+        />
       )}
       {bgType === 'gradient' && (
-        <div className="flex gap-4">
-          <div className="flex-1">
-            <label htmlFor="gradientStart" className="block text-sm font-medium mb-2">시작 색상</label>
-            <input
-              type="color"
-              id="gradientStart"
-              value={bgGradient[0]}
-              onChange={e => setBgGradient([e.target.value, bgGradient[1]])}
-              className="w-full h-10 rounded-md cursor-pointer"
-            />
-          </div>
-          <div className="flex-1">
-            <label htmlFor="gradientEnd" className="block text-sm font-medium mb-2">종료 색상</label>
-            <input
-              type="color"
-              id="gradientEnd"
-              value={bgGradient[1]}
-              onChange={e => setBgGradient([bgGradient[0], e.target.value])}
-              className="w-full h-10 rounded-md cursor-pointer"
-            />
-          </div>
+        <div className="flex flex-col gap-4">
+          <ColorInput
+            label="시작 색상"
+            value={bgGradient[0]}
+            onChange={value => setBgGradient([value, bgGradient[1]])}
+            id="gradientStart"
+          />
+          <ColorInput
+            label="종료 색상"
+            value={bgGradient[1]}
+            onChange={value => setBgGradient([bgGradient[0], value])}
+            id="gradientEnd"
+          />
         </div>
       )}
     </div>

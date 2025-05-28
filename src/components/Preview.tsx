@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import type { TextConfig, BackgroundConfig } from '../types';
+import { calculateOptimalVerticalOffset, getOptimalTextBaseline } from '../utils/textAlignment';
 
 interface PreviewProps {
   textConfig: TextConfig;
@@ -42,7 +43,7 @@ export function Preview({ textConfig, bgConfig, displaySize = CANVAS_SIZE }: Pre
       }
 
       if (bgConfig.type === 'gradient' && bgConfig.gradientColors) {
-        const gradient = ctx.createLinearGradient(0, 0, CANVAS_SIZE, 0);
+        const gradient = ctx.createLinearGradient(0, 0, CANVAS_SIZE, CANVAS_SIZE);
         gradient.addColorStop(0, bgConfig.gradientColors[0]);
         gradient.addColorStop(1, bgConfig.gradientColors[1]);
         ctx.fillStyle = gradient;
@@ -54,11 +55,13 @@ export function Preview({ textConfig, bgConfig, displaySize = CANVAS_SIZE }: Pre
     const drawText = (x: number) => {
       ctx.font = `bold ${fontSize}px "${textConfig.font}"`;
       ctx.fillStyle = textConfig.color;
-      ctx.textBaseline = 'middle';
+      ctx.textBaseline = getOptimalTextBaseline(textConfig.text);
       
-      // 수직 오프셋 계산 (캔버스 높이의 50%에서 시작 + 오프셋 적용)
+      // 수직 오프셋 계산 (캔버스 높이의 50%에서 시작 + 사용자 오프셋 + 동적 조정)
       const baseY = CANVAS_SIZE / 2;
-      const offsetY = baseY + (CANVAS_SIZE * (textConfig.verticalOffset / 100));
+      const userOffset = CANVAS_SIZE * (textConfig.verticalOffset / 100);
+      const dynamicOffset = calculateOptimalVerticalOffset(textConfig.text, 0);
+      const offsetY = baseY + userOffset + dynamicOffset;
       
       ctx.fillText(textConfig.text, x, offsetY);
     };
