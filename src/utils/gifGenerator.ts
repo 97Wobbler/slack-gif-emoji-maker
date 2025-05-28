@@ -82,7 +82,7 @@ export class GifGenerator {
       
       // 한 사이클이 완료되는 시간 계산 (unitWidth만큼 이동하는 시간)
       const cycleDuration = unitWidth / textConfig.speed; // seconds
-      const frameCount = Math.min(Math.ceil(cycleDuration * config.fps), 60); // 최대 60프레임으로 제한
+      const frameCount = Math.ceil(cycleDuration * config.fps);
       
       console.log(`GIF 생성 시작: ${frameCount}프레임, ${cycleDuration.toFixed(2)}초 애니메이션`);
       
