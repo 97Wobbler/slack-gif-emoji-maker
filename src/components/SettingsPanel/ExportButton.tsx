@@ -1,10 +1,9 @@
 interface ExportButtonProps {
   isGenerating: boolean
   handleGenerate: () => void
-  text: string
 }
 
-export function ExportButton({ isGenerating, handleGenerate, text }: ExportButtonProps) {
+export function ExportButton({ isGenerating, handleGenerate }: ExportButtonProps) {
   return (
     <button
       onClick={handleGenerate}

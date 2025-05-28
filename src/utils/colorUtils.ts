@@ -291,7 +291,7 @@ export function ensureGoodContrast(combination: ColorCombination): ColorCombinat
   if (contrastRatio < 4.5) {
     // 대비도가 낮으면 배경을 조정
     const [h, s, l] = hexToHsl(bgColor);
-    const [textH, textS, textL] = hexToHsl(textColor);
+    const [, , textL] = hexToHsl(textColor);
     
     // 텍스트가 밝으면 배경을 어둡게, 텍스트가 어두우면 배경을 밝게
     const newL = textL > 0.5 ? Math.max(0.1, l - 0.4) : Math.min(0.9, l + 0.4);
@@ -301,7 +301,7 @@ export function ensureGoodContrast(combination: ColorCombination): ColorCombinat
   // 그라디언트 색상도 유사하게 조정
   const [grad1H, grad1S, grad1L] = hexToHsl(bgGradient[0]);
   const [grad2H, grad2S, grad2L] = hexToHsl(bgGradient[1]);
-  const [textH, textS, textL] = hexToHsl(textColor);
+  const [, , textL] = hexToHsl(textColor);
   
   const adjustGradientL = (l: number) => {
     return textL > 0.5 ? Math.max(0.1, l - 0.2) : Math.min(0.9, l + 0.2);
