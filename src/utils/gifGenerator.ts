@@ -11,7 +11,7 @@ export class GifGenerator {
     this.canvas = document.createElement('canvas');
     this.canvas.width = config.width;
     this.canvas.height = config.height;
-    this.ctx = this.canvas.getContext('2d')!;
+    this.ctx = this.canvas.getContext('2d', { willReadFrequently: true })!;
     
     this.gif = new GIF({
       workers: 2,

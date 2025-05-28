@@ -19,7 +19,7 @@ export function Preview({ textConfig, bgConfig, displaySize = CANVAS_SIZE }: Pre
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
 
     // 캔버스 크기 설정 (항상 128x128)
