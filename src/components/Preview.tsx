@@ -61,7 +61,7 @@ export function Preview({ textConfig, bgConfig, displaySize = CANVAS_SIZE }: Pre
       const baseY = CANVAS_SIZE / 2;
       const userOffset = CANVAS_SIZE * (textConfig.verticalOffset / 100);
       const dynamicOffset = calculateOptimalVerticalOffset(textConfig.text, 0);
-      const offsetY = baseY + userOffset + dynamicOffset;
+      const offsetY = baseY - userOffset + dynamicOffset;
       
       ctx.fillText(textConfig.text, x, offsetY);
     };

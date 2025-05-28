@@ -4,11 +4,12 @@ import { PreviewPanel } from './components/PreviewPanel'
 import { SettingsPanel } from './components/SettingsPanel'
 import type { TextConfig, BackgroundConfig, GifConfig } from './types'
 import { GifGenerator } from './utils/gifGenerator'
+import { useToast } from './hooks/useToast'
 
 const DEFAULT_CONFIG: GifConfig = {
   width: 128,
   height: 128,
-  fps: 15
+  fps: 33
 }
 
 function App() {
@@ -22,6 +23,8 @@ function App() {
   const [fontSize, setFontSize] = useState(80)
   const [verticalOffset, setVerticalOffset] = useState(0)
   const [isGenerating, setIsGenerating] = useState(false)
+
+  const { showToast, ToastComponent } = useToast()
 
   const textConfig: TextConfig = {
     text: text || '안녕하세요',
@@ -40,7 +43,10 @@ function App() {
   }
 
   const handleGenerate = useCallback(async () => {
-    if (!text) return
+    if (!text) {
+      showToast('텍스트를 입력해주세요.', 'error')
+      return
+    }
     
     setIsGenerating(true)
     try {
@@ -51,7 +57,7 @@ function App() {
     } finally {
       setIsGenerating(false)
     }
-  }, [text, textConfig, bgConfig])
+  }, [text, textConfig, bgConfig, showToast])
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -81,6 +87,7 @@ function App() {
           handleGenerate={handleGenerate}
         />
       </main>
+      {ToastComponent}
     </div>
   )
 }

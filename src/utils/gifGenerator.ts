@@ -53,7 +53,7 @@ export class GifGenerator {
     const baseY = this.canvas.height / 2;
     const userOffset = this.canvas.height * (text.verticalOffset / 100);
     const dynamicOffset = calculateOptimalVerticalOffset(text.text, 0);
-    const offsetY = baseY + userOffset + dynamicOffset;
+    const offsetY = baseY - userOffset + dynamicOffset;
     
     this.ctx.fillText(text.text, x, offsetY);
   }
@@ -70,7 +70,7 @@ export class GifGenerator {
     gifConfig?: GifConfig
   ): Promise<Blob> {
     // gifConfig가 없으면 기본값 사용
-    const config = gifConfig || { width: 128, height: 128, fps: 15 };
+    const config = gifConfig || { width: 128, height: 128, fps: 33 };
     
     return new Promise((resolve, reject) => {
       const textWidth = this.getTextWidth(textConfig);

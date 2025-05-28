@@ -5,6 +5,7 @@ alwaysApply: false
 ---
 When I give improvement instructions, follow the steps below:
 	1.	Create a markdown file named "feedback_${timeStamp}.md" in the @documents folder.
+	•	Since the LLM may not always know the current time, manually check the current time in the terminal (e.g., using date) and insert that value as the timeStamp.
 	2.	In that file, organize each improvement point using the as-is / to-be format.
 	3.	After listing all points, create a to-do list to address them.
 	4.	From the to-do list, group only the items that can be handled together in one step, apply the changes, and ask me for feedback.
