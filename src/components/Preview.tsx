@@ -112,11 +112,16 @@ export function Preview({ textConfig, bgConfig, displaySize = CANVAS_SIZE }: Pre
     };
   }, [textConfig, bgConfig]);
 
+  // 작은 크기 (슬랙 이모지 크기)일 때와 큰 크기 (미리보기)일 때 다른 스타일 적용
+  const isSmallSize = displaySize < CANVAS_SIZE;
+  const canvasClassName = isSmallSize ? 'shadow-sm' : 'border rounded-lg';
+  const backgroundDivClassName = isSmallSize ? 'absolute inset-0 -z-10' : 'absolute inset-0 -z-10 rounded-lg';
+
   return (
     <div className="relative">
       <canvas
         ref={canvasRef}
-        className="border rounded-lg"
+        className={canvasClassName}
         style={{
           width: displaySize,
           height: displaySize,
@@ -127,7 +132,7 @@ export function Preview({ textConfig, bgConfig, displaySize = CANVAS_SIZE }: Pre
       />
       {bgConfig.type === 'transparent' && (
         <div 
-          className="absolute inset-0 -z-10 rounded-lg"
+          className={backgroundDivClassName}
           style={{
             background: 'repeating-comb-pattern'
           }}

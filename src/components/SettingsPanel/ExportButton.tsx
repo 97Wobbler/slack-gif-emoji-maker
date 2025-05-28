@@ -9,9 +9,23 @@ export function ExportButton({ isGenerating, handleGenerate, text }: ExportButto
     <button
       onClick={handleGenerate}
       disabled={isGenerating}
-      className="w-full py-2 px-4 bg-gray-200 text-gray-900 rounded-md hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
+      className={`
+        w-full py-3 px-4 bg-gradient-to-r from-purple-500 to-pink-500 
+        text-white rounded-lg font-medium shadow-sm
+        hover:from-purple-600 hover:to-pink-600 
+        disabled:from-gray-400 disabled:to-gray-500
+        disabled:cursor-not-allowed
+        transition-all duration-200 transform
+        ${isGenerating ? 'scale-95' : 'hover:scale-105'}
+        flex items-center justify-center gap-2
+      `}
     >
-      {isGenerating ? '생성 중...' : 'GIF 생성하기'}
+      <div className={`transition-transform duration-200 ${isGenerating ? 'animate-spin' : ''}`}>
+        🎬
+      </div>
+      <span>
+        {isGenerating ? '생성 중...' : 'GIF 생성하기'}
+      </span>
     </button>
   )
 } 

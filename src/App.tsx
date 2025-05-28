@@ -17,7 +17,7 @@ function App() {
   const [textColor, setTextColor] = useState('#000000')
   const [bgType, setBgType] = useState<BackgroundConfig['type']>('solid')
   const [bgColor, setBgColor] = useState('#ffffff')
-  const [bgGradient, setBgGradient] = useState<[string, string]>(['#ff0000', '#0000ff'])
+  const [bgGradient, setBgGradient] = useState<[string, string]>(['#667eea', '#764ba2'])
   const [speed, setSpeed] = useState(50)
   const [gap, setGap] = useState(50)
   const [fontSize, setFontSize] = useState(80)

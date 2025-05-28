@@ -1,0 +1,30 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+When I request idea brainstorming for a new feature or system, follow the steps below:
+
+1. Based on the idea I provide, perform the following:
+    - Infer the **background** or **problem context** that the idea is trying to address.
+    - Suggest 2 to 5 **related ideas** with similar goals or context. These may include:
+        • Ideas that can be implemented together
+        • Alternative ideas that solve the same problem in a simpler way
+        • Extensions or variations of the original idea
+    - Add a brief explanation for each suggested idea.
+
+2. After I review and approve one or more ideas, proceed with the steps below:
+    - Create a markdown file named `idea_brainstorming_${timeStamp}.md` in the @documents folder.
+        • Since the LLM may not always know the current time, manually check the current time in the terminal (e.g., using `date`) and insert that value as the timeStamp.
+
+3. In that file, organize the selected ideas using the following structure for each one:
+    - **Problem / Need**: What user issue or pain point does this idea aim to solve?
+    - **UX / Flow Consideration**: How would the idea fit into the existing user experience or interface?
+    - **Location / Impact Scope**: Which part of the codebase (file/component/section) is likely to be affected or extended?
+    - **Rationale** (optional): If the idea is experimental, briefly explain why it could still be valuable.
+
+4. From the listed ideas, select up to 1–3 of the most promising ones, mark them as a checklist, and recommend one(s) to prototype first.
+
+5. Wait for my feedback. Based on my response, proceed as follows:
+    • (5-1) If I approve one or more ideas: create a follow-up `feedback_${timeStamp}.md` file and follow the improvement flow.
+    • (5-2) If I request revisions: update the brainstorming file with the revised ideas and checklist, then request confirmation again.

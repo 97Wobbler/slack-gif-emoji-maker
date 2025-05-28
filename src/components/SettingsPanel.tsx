@@ -3,6 +3,7 @@ import { TextColorSetting } from './SettingsPanel/TextColorSetting'
 import { FontSizeSetting } from './SettingsPanel/FontSizeSetting'
 import { VerticalOffsetSetting } from './SettingsPanel/VerticalOffsetSetting'
 import { BackgroundSetting } from './SettingsPanel/BackgroundSetting'
+import { ColorRandomizer } from './SettingsPanel/ColorRandomizer'
 import { SpeedSetting } from './SettingsPanel/SpeedSetting'
 import { GapSetting } from './SettingsPanel/GapSetting'
 import { OutputInfo } from './SettingsPanel/OutputInfo'
@@ -69,6 +70,12 @@ export function SettingsPanel({
           setBgColor={setBgColor}
           bgGradient={bgGradient}
           setBgGradient={setBgGradient}
+        />
+        <ColorRandomizer
+          setTextColor={setTextColor}
+          setBgColor={setBgColor}
+          setBgGradient={setBgGradient}
+          bgType={bgType}
         />
         <SpeedSetting speed={speed} setSpeed={setSpeed} />
         <GapSetting gap={gap} setGap={setGap} />
