@@ -8,6 +8,24 @@ export interface TextConfig {
   verticalOffset: number; // 수직 오프셋 (%)
 }
 
+export interface ImageConfig {
+  file: File | null;
+  dataUrl: string | null;
+  animationType: AnimationType;
+  speed: number; // 애니메이션 속도
+  intensity: number; // 애니메이션 강도 (%)
+}
+
+export type AnimationType = 
+  | 'scale' // 확대/축소
+  | 'horizontalSlide' // 좌우 슬라이딩
+  | 'verticalStretch' // 위아래 스케일링
+  | 'bounce' // 바운스
+  | 'rotate' // 회전
+  | 'pulse'; // 펄스
+
+export type ContentMode = 'text' | 'image';
+
 export interface BackgroundConfig {
   type: 'solid' | 'gradient' | 'transparent';
   color: string;
