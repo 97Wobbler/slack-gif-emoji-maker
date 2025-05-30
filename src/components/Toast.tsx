@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 interface ToastProps {
   message: string;
-  type?: 'success' | 'error';
+  type?: 'success' | 'error' | 'info';
   onClose: () => void;
   duration?: number; // in milliseconds
 }
@@ -35,7 +35,9 @@ export default function Toast({ message, type = 'success', onClose, duration = 3
   const baseStyle =
     'fixed bottom-5 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded shadow-lg text-sm text-white z-[9999] transition-opacity duration-1000';
   const typeStyle =
-    type === 'success' ? 'bg-green-600' : 'bg-red-600';
+    type === 'success' ? 'bg-green-600' : 
+    type === 'error' ? 'bg-red-600' : 
+    'bg-blue-600'; // info type
 
   return (
     <div
