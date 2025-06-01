@@ -14,7 +14,7 @@ export function useToast() {
   const ToastComponent = toast ? (
     <Toast
       message={toast.message}
-      type={toast.type}
+      type={toast.type || 'success'}
       onClose={() => setToast(null)}
     />
   ) : null;

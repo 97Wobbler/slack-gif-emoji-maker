@@ -45,12 +45,13 @@ export function AnimationSettings({ imageConfig, setImageConfig }: AnimationSett
         <label className="block text-sm font-medium text-gray-700 mb-2">
           애니메이션 타입
         </label>
-        <div className="grid grid-cols-1 gap-2">
+        <div className="grid grid-cols-1 gap-2 min-h-[360px]">
           {ANIMATION_OPTIONS.map((option) => (
             <label
               key={option.value}
               className={`
                 flex items-center p-3 border rounded-lg cursor-pointer transition-colors
+                min-h-[4.5rem] relative
                 ${imageConfig.animationType === option.value
                   ? 'border-blue-500 bg-blue-50'
                   : 'border-gray-200 hover:border-gray-300'
@@ -70,7 +71,7 @@ export function AnimationSettings({ imageConfig, setImageConfig }: AnimationSett
                 <div className="text-xs text-gray-500">{option.description}</div>
               </div>
               {imageConfig.animationType === option.value && (
-                <div className="text-blue-500 text-sm">✓</div>
+                <div className="text-blue-500 text-sm absolute right-3">✓</div>
               )}
             </label>
           ))}

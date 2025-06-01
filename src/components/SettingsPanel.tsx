@@ -71,57 +71,59 @@ export function SettingsPanel({
   return (
     <div className="h-full">
       <section className="bg-white shadow-md h-full flex flex-col">
-        <div className="p-6 flex-1 overflow-y-auto">
-          <h2 className="text-lg font-medium mb-6">설정</h2>
-          <div className="space-y-6">
-            {/* 모드 선택 */}
-            <ModeSelector mode={mode} setMode={setMode} />
-            
-            {/* 텍스트 모드 설정 */}
-            {mode === 'text' && (
-              <>
-                <TextSetting text={text} setText={setText} />
-                <TextColorSetting textColor={textColor} setTextColor={setTextColor} />
-                <FontSizeSetting fontSize={fontSize} setFontSize={setFontSize} />
-                <VerticalOffsetSetting verticalOffset={verticalOffset} setVerticalOffset={setVerticalOffset} />
-                <SpeedSetting speed={speed} setSpeed={setSpeed} />
-                <GapSetting gap={gap} setGap={setGap} />
-              </>
-            )}
-            
-            {/* 이미지 모드 설정 */}
-            {mode === 'image' && (
-              <>
-                <ImageUpload 
-                  imageConfig={imageConfig} 
-                  setImageConfig={setImageConfig}
-                  showToast={showToast}
-                />
-                <AnimationSettings imageConfig={imageConfig} setImageConfig={setImageConfig} />
-              </>
-            )}
-            
-            {/* 공통 설정 */}
-            <BackgroundSetting
-              bgType={bgType}
-              setBgType={setBgType}
-              bgColor={bgColor}
-              setBgColor={setBgColor}
-              bgGradient={bgGradient}
-              setBgGradient={setBgGradient}
-            />
-            
-            {mode === 'text' && (
-              <ColorRandomizer
-                setTextColor={setTextColor}
-                setBgColor={setBgColor}
-                setBgGradient={setBgGradient}
+        <div className="p-6 flex-1 overflow-y-auto min-h-[calc(100vh-var(--header-height)-5rem)] relative">
+          <div className="max-w-[calc(100vw-2rem)] space-y-6">
+            <h2 className="text-lg font-medium mb-6">설정</h2>
+            <div className="space-y-6">
+              {/* 모드 선택 */}
+              <ModeSelector mode={mode} setMode={setMode} />
+              
+              {/* 텍스트 모드 설정 */}
+              {mode === 'text' && (
+                <>
+                  <TextSetting text={text} setText={setText} />
+                  <TextColorSetting textColor={textColor} setTextColor={setTextColor} />
+                  <FontSizeSetting fontSize={fontSize} setFontSize={setFontSize} />
+                  <VerticalOffsetSetting verticalOffset={verticalOffset} setVerticalOffset={setVerticalOffset} />
+                  <SpeedSetting speed={speed} setSpeed={setSpeed} />
+                  <GapSetting gap={gap} setGap={setGap} />
+                </>
+              )}
+              
+              {/* 이미지 모드 설정 */}
+              {mode === 'image' && (
+                <>
+                  <ImageUpload 
+                    imageConfig={imageConfig} 
+                    setImageConfig={setImageConfig}
+                    showToast={showToast}
+                  />
+                  <AnimationSettings imageConfig={imageConfig} setImageConfig={setImageConfig} />
+                </>
+              )}
+              
+              {/* 공통 설정 */}
+              <BackgroundSetting
                 bgType={bgType}
+                setBgType={setBgType}
+                bgColor={bgColor}
+                setBgColor={setBgColor}
+                bgGradient={bgGradient}
+                setBgGradient={setBgGradient}
               />
-            )}
+              
+              {mode === 'text' && (
+                <ColorRandomizer
+                  setTextColor={setTextColor}
+                  setBgColor={setBgColor}
+                  setBgGradient={setBgGradient}
+                  bgType={bgType}
+                />
+              )}
+            </div>
           </div>
         </div>
-        <div className="p-6 border-t border-gray-100 flex-shrink-0">
+        <div className="p-6 border-t border-gray-100 flex-shrink-0 bg-white">
           <ExportButton
             isGenerating={isGenerating}
             handleGenerate={handleGenerate}
