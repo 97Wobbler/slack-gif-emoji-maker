@@ -64,20 +64,246 @@ export function Preview({ mode, textConfig, imageConfig, bgConfig, displaySize =
       }
     };
 
-    // 텍스트 그리기 함수
-    const drawText = (x: number) => {
+    // 텍스트 그리기 함수 (기본 슬라이딩용)
+    const drawText = (x: number, text: string = textConfig.text) => {
       const fontSize = CANVAS_SIZE * (textConfig.fontSize / 100);
       ctx.font = `bold ${fontSize}px "${textConfig.font}"`;
       ctx.fillStyle = textConfig.color;
-      ctx.textBaseline = getOptimalTextBaseline(textConfig.text);
+      ctx.textBaseline = getOptimalTextBaseline(text);
       
       // 수직 오프셋 계산 (캔버스 높이의 50%에서 시작 + 사용자 오프셋 + 동적 조정)
       const baseY = CANVAS_SIZE / 2;
       const userOffset = CANVAS_SIZE * (textConfig.verticalOffset / 100);
-      const dynamicOffset = calculateOptimalVerticalOffset(textConfig.text, 0);
+      const dynamicOffset = calculateOptimalVerticalOffset(text, 0);
       const offsetY = baseY - userOffset + dynamicOffset;
       
-      ctx.fillText(textConfig.text, x, offsetY);
+      ctx.fillText(text, x, offsetY);
+    };
+
+    // 텍스트 애니메이션 설정
+    const setupTextAnimation = () => {
+      const fontSize = CANVAS_SIZE * (textConfig.fontSize / 100);
+      ctx.font = `bold ${fontSize}px "${textConfig.font}"`;
+      const textWidth = ctx.measureText(textConfig.text).width;
+      const gapPixels = CANVAS_SIZE * (textConfig.gap / 100);
+      const unitWidth = textWidth + gapPixels;
+      const numCopies = Math.ceil(CANVAS_SIZE / unitWidth) + 2;
+
+      return { textWidth, unitWidth, numCopies };
+    };
+
+    // 텍스트 애니메이션 그리기 함수
+    const drawTextAnimation = (timestamp: number) => {
+      const progress = timestamp - (startTimeRef.current || 0);
+      const { animationType, animationSpeed, animationIntensity, animationSettings } = textConfig;
+      
+      // 애니메이션 주기 계산 (설정된 지속시간 사용)
+      const cycleDuration = animationSettings.duration * 1000; // 초를 밀리초로 변환
+      let cycleProgress = (progress % cycleDuration) / cycleDuration;
+
+      // 애니메이션 방향 처리
+      if (animationSettings.direction === 'reverse') {
+        cycleProgress = 1 - cycleProgress;
+      } else if (animationSettings.direction === 'alternate') {
+        const cycle = Math.floor(progress / cycleDuration);
+        if (cycle % 2 === 1) {
+          cycleProgress = 1 - cycleProgress;
+        }
+      }
+
+      // 반복 횟수 처리
+      if (animationSettings.repeat !== -1) {
+        const currentCycle = Math.floor(progress / cycleDuration);
+        if (currentCycle >= animationSettings.repeat) {
+          // 애니메이션 완료 상태로 고정
+          cycleProgress = animationSettings.direction === 'reverse' ? 0 : 1;
+        }
+      }
+
+      const normalizedIntensity = animationIntensity / 100;
+
+      ctx.save();
+
+      switch (animationType) {
+        case 'slide': {
+          // 기존 슬라이딩 애니메이션
+          const { textWidth, unitWidth, numCopies } = setupTextAnimation();
+          const distance = (progress * textConfig.speed) / 1000;
+          const offset = distance % unitWidth;
+
+          for (let i = 0; i < numCopies; i++) {
+            const x = i * unitWidth - offset;
+            if (x > -textWidth && x < CANVAS_SIZE) {
+              drawText(x);
+            }
+          }
+          break;
+        }
+        
+        case 'typing': {
+          // 타이핑 효과 (개선된 버전)
+          const totalChars = textConfig.text.length;
+          const charsToShow = Math.floor((cycleProgress * totalChars) + 1);
+          const visibleText = textConfig.text.substring(0, charsToShow);
+          
+          // 중앙 정렬
+          const fontSize = CANVAS_SIZE * (textConfig.fontSize / 100);
+          ctx.font = `bold ${fontSize}px "${textConfig.font}"`;
+          const textWidth = ctx.measureText(visibleText).width;
+          const x = (CANVAS_SIZE - textWidth) / 2;
+          
+          drawText(x, visibleText);
+
+          // 커서 표시 (설정이 활성화된 경우)
+          if (animationSettings.typing?.showCursor) {
+            const cursorBlinkSpeed = animationSettings.typing.cursorBlinkSpeed ?? 1;
+            const blinkProgress = (progress * cursorBlinkSpeed / 1000) % 1;
+            if (blinkProgress < 0.5) {
+              ctx.fillStyle = textConfig.color;
+              ctx.fillRect(x + textWidth + 2, 
+                          CANVAS_SIZE / 2 - fontSize / 2, 
+                          2, fontSize);
+            }
+          }
+          break;
+        }
+        
+        case 'rotate': {
+          // 회전 효과 (개선된 버전)
+          const fontSize = CANVAS_SIZE * (textConfig.fontSize / 100);
+          ctx.font = `bold ${fontSize}px "${textConfig.font}"`;
+          const textWidth = ctx.measureText(textConfig.text).width;
+          
+          // 캔버스 중심으로 이동
+          ctx.translate(CANVAS_SIZE / 2, CANVAS_SIZE / 2);
+          
+          // 회전 방향과 최대 각도 적용
+          const rotateSettings = animationSettings.rotate;
+          const maxRotation = (rotateSettings?.maxRotation ?? 360) * Math.PI / 180;
+          let rotation = cycleProgress * maxRotation * normalizedIntensity;
+          
+          if (rotateSettings?.direction === 'counterclockwise') {
+            rotation = -rotation;
+          } else if (rotateSettings?.direction === 'alternate') {
+            rotation = Math.sin(cycleProgress * Math.PI * 2) * maxRotation * normalizedIntensity;
+          }
+          
+          ctx.rotate(rotation);
+          
+          // 텍스트를 중앙에 그리기
+          drawText(-textWidth / 2, textConfig.text);
+          break;
+        }
+        
+        case 'shake': {
+          // 진동/떨림 효과 (개선된 버전)
+          const shakeSettings = animationSettings.shake;
+          const frequency = shakeSettings?.frequency ?? 10;
+          const damping = shakeSettings?.damping ?? 0.1;
+          
+          const shakeX = Math.sin(progress * frequency / 100) * normalizedIntensity * 10 * (1 - damping * cycleProgress);
+          const shakeY = Math.cos(progress * frequency / 100) * normalizedIntensity * 10 * (1 - damping * cycleProgress);
+          
+          const fontSize = CANVAS_SIZE * (textConfig.fontSize / 100);
+          ctx.font = `bold ${fontSize}px "${textConfig.font}"`;
+          const textWidth = ctx.measureText(textConfig.text).width;
+          const x = (CANVAS_SIZE - textWidth) / 2 + shakeX;
+          
+          ctx.translate(0, shakeY);
+          drawText(x, textConfig.text);
+          break;
+        }
+        
+        case 'bounce': {
+          // 바운스 효과 (개선된 버전)
+          const bounceSettings = animationSettings.bounce;
+          const height = (bounceSettings?.height ?? 50) / 100;
+          const elasticity = bounceSettings?.elasticity ?? 0.8;
+          
+          const bounceY = Math.abs(Math.sin(cycleProgress * Math.PI * 2)) * normalizedIntensity * 30 * height * elasticity;
+          
+          const fontSize = CANVAS_SIZE * (textConfig.fontSize / 100);
+          ctx.font = `bold ${fontSize}px "${textConfig.font}"`;
+          const textWidth = ctx.measureText(textConfig.text).width;
+          const x = (CANVAS_SIZE - textWidth) / 2;
+          
+          ctx.translate(0, -bounceY);
+          drawText(x, textConfig.text);
+          break;
+        }
+        
+        case 'zoom': {
+          // 줌 인/아웃 효과 (개선된 버전)
+          const zoomSettings = animationSettings.zoom;
+          const minScale = (zoomSettings?.minScale ?? 80) / 100;
+          const maxScale = (zoomSettings?.maxScale ?? 150) / 100;
+          
+          const scaleRange = maxScale - minScale;
+          const scale = minScale + (Math.sin(cycleProgress * Math.PI * 2) * 0.5 + 0.5) * scaleRange * normalizedIntensity;
+          
+          // 캔버스 중심으로 이동하고 스케일 적용
+          ctx.translate(CANVAS_SIZE / 2, CANVAS_SIZE / 2);
+          ctx.scale(scale, scale);
+          
+          const fontSize = CANVAS_SIZE * (textConfig.fontSize / 100);
+          ctx.font = `bold ${fontSize}px "${textConfig.font}"`;
+          const textWidth = ctx.measureText(textConfig.text).width;
+          
+          drawText(-textWidth / 2, textConfig.text);
+          break;
+        }
+        
+        case 'fade': {
+          // 페이드 인/아웃 효과 (개선된 버전)
+          const fadeSettings = animationSettings.fade;
+          const minOpacity = (fadeSettings?.minOpacity ?? 30) / 100;
+          const maxOpacity = (fadeSettings?.maxOpacity ?? 100) / 100;
+          
+          const opacityRange = maxOpacity - minOpacity;
+          const alpha = minOpacity + (Math.sin(cycleProgress * Math.PI * 2) * 0.5 + 0.5) * opacityRange * normalizedIntensity;
+          ctx.globalAlpha = alpha;
+          
+          const fontSize = CANVAS_SIZE * (textConfig.fontSize / 100);
+          ctx.font = `bold ${fontSize}px "${textConfig.font}"`;
+          const textWidth = ctx.measureText(textConfig.text).width;
+          const x = (CANVAS_SIZE - textWidth) / 2;
+          
+          drawText(x, textConfig.text);
+          break;
+        }
+        
+        case 'colorChange': {
+          // 색상 변화 효과 (개선된 버전)
+          const colorSettings = animationSettings.colorChange;
+          const colors = colorSettings?.colors ?? ['#ff0000', '#00ff00', '#0000ff'];
+          const smooth = colorSettings?.smooth ?? true;
+          
+          if (smooth) {
+            const hue = (cycleProgress * 360 * normalizedIntensity) % 360;
+            ctx.fillStyle = `hsl(${hue}, 70%, 50%)`;
+          } else {
+            const colorIndex = Math.floor(cycleProgress * colors.length) % colors.length;
+            ctx.fillStyle = colors[colorIndex];
+          }
+          
+          const fontSize = CANVAS_SIZE * (textConfig.fontSize / 100);
+          ctx.font = `bold ${fontSize}px "${textConfig.font}"`;
+          const textWidth = ctx.measureText(textConfig.text).width;
+          const x = (CANVAS_SIZE - textWidth) / 2;
+          
+          // 수직 오프셋 계산
+          const baseY = CANVAS_SIZE / 2;
+          const userOffset = CANVAS_SIZE * (textConfig.verticalOffset / 100);
+          const dynamicOffset = calculateOptimalVerticalOffset(textConfig.text, 0);
+          const offsetY = baseY - userOffset + dynamicOffset;
+          
+          ctx.textBaseline = getOptimalTextBaseline(textConfig.text);
+          ctx.fillText(textConfig.text, x, offsetY);
+          break;
+        }
+      }
+
+      ctx.restore();
     };
 
     // 이미지 애니메이션 그리기 함수
@@ -144,18 +370,6 @@ export function Preview({ mode, textConfig, imageConfig, bgConfig, displaySize =
       ctx.restore();
     };
 
-    // 텍스트 애니메이션 설정
-    const setupTextAnimation = () => {
-      const fontSize = CANVAS_SIZE * (textConfig.fontSize / 100);
-      ctx.font = `bold ${fontSize}px "${textConfig.font}"`;
-      const textWidth = ctx.measureText(textConfig.text).width;
-      const gapPixels = CANVAS_SIZE * (textConfig.gap / 100);
-      const unitWidth = textWidth + gapPixels;
-      const numCopies = Math.ceil(CANVAS_SIZE / unitWidth) + 2;
-
-      return { textWidth, unitWidth, numCopies };
-    };
-
     // 애니메이션 프레임 함수
     const animate = (timestamp: number) => {
       if (!startTimeRef.current) startTimeRef.current = timestamp;
@@ -165,17 +379,7 @@ export function Preview({ mode, textConfig, imageConfig, bgConfig, displaySize =
 
       if (mode === 'text') {
         // 텍스트 애니메이션
-        const { textWidth, unitWidth, numCopies } = setupTextAnimation();
-        const progress = timestamp - startTimeRef.current;
-        const distance = (progress * textConfig.speed) / 1000;
-        const offset = distance % unitWidth;
-
-        for (let i = 0; i < numCopies; i++) {
-          const x = i * unitWidth - offset;
-          if (x > -textWidth && x < CANVAS_SIZE) {
-            drawText(x);
-          }
-        }
+        drawTextAnimation(timestamp);
       } else if (mode === 'image') {
         // 이미지 애니메이션
         drawImageAnimation(timestamp);

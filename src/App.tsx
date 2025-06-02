@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react'
 import { Header } from './components/Header'
 import { PreviewPanel } from './components/PreviewPanel'
 import { SettingsPanel } from './components/SettingsPanel'
-import type { TextConfig, BackgroundConfig, GifConfig, ImageConfig, ContentMode } from './types'
+import type { TextConfig, BackgroundConfig, GifConfig, ImageConfig, ContentMode, TextAnimationType, TextAnimationSettings } from './types'
 import { GifGenerator } from './utils/gifGenerator'
 import { useToast } from './hooks/useToast'
 
@@ -23,6 +23,14 @@ function App() {
   const [gap, setGap] = useState(50)
   const [fontSize, setFontSize] = useState(80)
   const [verticalOffset, setVerticalOffset] = useState(0)
+  const [textAnimationType, setTextAnimationType] = useState<TextAnimationType>('slide')
+  const [textAnimationSpeed, setTextAnimationSpeed] = useState(1.5)
+  const [textAnimationIntensity, setTextAnimationIntensity] = useState(100)
+  const [textAnimationSettings, setTextAnimationSettings] = useState<TextAnimationSettings>({
+    duration: 2,
+    repeat: -1,
+    direction: 'normal',
+  })
 
   // 이미지 관련 상태
   const [imageConfig, setImageConfig] = useState<ImageConfig>({
@@ -49,7 +57,11 @@ function App() {
     speed,
     gap,
     fontSize,
-    verticalOffset
+    verticalOffset,
+    animationType: textAnimationType,
+    animationSpeed: textAnimationSpeed,
+    animationIntensity: textAnimationIntensity,
+    animationSettings: textAnimationSettings
   }
 
   const bgConfig: BackgroundConfig = {
@@ -106,6 +118,14 @@ function App() {
             setFontSize={setFontSize}
             verticalOffset={verticalOffset}
             setVerticalOffset={setVerticalOffset}
+            textAnimationType={textAnimationType}
+            setTextAnimationType={setTextAnimationType}
+            textAnimationSpeed={textAnimationSpeed}
+            setTextAnimationSpeed={setTextAnimationSpeed}
+            textAnimationIntensity={textAnimationIntensity}
+            setTextAnimationIntensity={setTextAnimationIntensity}
+            textAnimationSettings={textAnimationSettings}
+            setTextAnimationSettings={setTextAnimationSettings}
             imageConfig={imageConfig}
             setImageConfig={setImageConfig}
             bgType={bgType}

@@ -1,4 +1,5 @@
 import { TextSetting } from './SettingsPanel/TextSetting'
+import { TextAnimationSettingsPanel } from './SettingsPanel/TextAnimationSettings'
 import { TextColorSetting } from './SettingsPanel/TextColorSetting'
 import { FontSizeSetting } from './SettingsPanel/FontSizeSetting'
 import { VerticalOffsetSetting } from './SettingsPanel/VerticalOffsetSetting'
@@ -11,7 +12,7 @@ import { ExportButton } from './SettingsPanel/ExportButton'
 import { ModeSelector } from './SettingsPanel/ModeSelector'
 import { ImageUpload } from './SettingsPanel/ImageUpload'
 import { AnimationSettings } from './SettingsPanel/AnimationSettings'
-import type { BackgroundConfig, ContentMode, ImageConfig } from '../types'
+import type { BackgroundConfig, ContentMode, ImageConfig, TextAnimationType, TextAnimationSettings } from '../types'
 
 interface SettingsPanelProps {
   mode: ContentMode
@@ -24,6 +25,14 @@ interface SettingsPanelProps {
   setFontSize: (v: number) => void
   verticalOffset: number
   setVerticalOffset: (v: number) => void
+  textAnimationType: TextAnimationType
+  setTextAnimationType: (v: TextAnimationType) => void
+  textAnimationSpeed: number
+  setTextAnimationSpeed: (v: number) => void
+  textAnimationIntensity: number
+  setTextAnimationIntensity: (v: number) => void
+  textAnimationSettings: TextAnimationSettings
+  setTextAnimationSettings: (v: TextAnimationSettings) => void
   imageConfig: ImageConfig
   setImageConfig: (config: ImageConfig) => void
   bgType: BackgroundConfig['type']
@@ -52,6 +61,14 @@ export function SettingsPanel({
   setFontSize,
   verticalOffset,
   setVerticalOffset,
+  textAnimationType,
+  setTextAnimationType,
+  textAnimationSpeed,
+  setTextAnimationSpeed,
+  textAnimationIntensity,
+  setTextAnimationIntensity,
+  textAnimationSettings,
+  setTextAnimationSettings,
   imageConfig,
   setImageConfig,
   bgType,
@@ -81,7 +98,21 @@ export function SettingsPanel({
               {/* 텍스트 모드 설정 */}
               {mode === 'text' && (
                 <>
-                  <TextSetting text={text} setText={setText} />
+                  <TextSetting 
+                    text={text} 
+                    setText={setText}
+                    animationType={textAnimationType}
+                    setAnimationType={setTextAnimationType}
+                    animationSpeed={textAnimationSpeed}
+                    setAnimationSpeed={setTextAnimationSpeed}
+                    animationIntensity={textAnimationIntensity}
+                    setAnimationIntensity={setTextAnimationIntensity}
+                  />
+                  <TextAnimationSettingsPanel
+                    animationType={textAnimationType}
+                    settings={textAnimationSettings}
+                    setSettings={setTextAnimationSettings}
+                  />
                   <TextColorSetting textColor={textColor} setTextColor={setTextColor} />
                   <FontSizeSetting fontSize={fontSize} setFontSize={setFontSize} />
                   <VerticalOffsetSetting verticalOffset={verticalOffset} setVerticalOffset={setVerticalOffset} />
