@@ -95,30 +95,11 @@ export function Preview({ mode, textConfig, imageConfig, bgConfig, displaySize =
     // 텍스트 애니메이션 그리기 함수
     const drawTextAnimation = (timestamp: number) => {
       const progress = timestamp - (startTimeRef.current || 0);
-      const { animationType, animationSpeed, animationIntensity, animationSettings } = textConfig;
+      const { animationType, animationSpeed, animationIntensity } = textConfig;
       
-      // 애니메이션 주기 계산 (설정된 지속시간 사용)
-      const cycleDuration = animationSettings.duration * 1000; // 초를 밀리초로 변환
-      let cycleProgress = (progress % cycleDuration) / cycleDuration;
-
-      // 애니메이션 방향 처리
-      if (animationSettings.direction === 'reverse') {
-        cycleProgress = 1 - cycleProgress;
-      } else if (animationSettings.direction === 'alternate') {
-        const cycle = Math.floor(progress / cycleDuration);
-        if (cycle % 2 === 1) {
-          cycleProgress = 1 - cycleProgress;
-        }
-      }
-
-      // 반복 횟수 처리
-      if (animationSettings.repeat !== -1) {
-        const currentCycle = Math.floor(progress / cycleDuration);
-        if (currentCycle >= animationSettings.repeat) {
-          // 애니메이션 완료 상태로 고정
-          cycleProgress = animationSettings.direction === 'reverse' ? 0 : 1;
-        }
-      }
+      // 애니메이션 주기 계산 (animationSpeed 사용)
+      const cycleDuration = 2000 / animationSpeed; // 기본 2초 주기를 속도로 나눔
+      const cycleProgress = (progress % cycleDuration) / cycleDuration;
 
       const normalizedIntensity = animationIntensity / 100;
 
@@ -141,7 +122,7 @@ export function Preview({ mode, textConfig, imageConfig, bgConfig, displaySize =
         }
         
         case 'typing': {
-          // 타이핑 효과 (개선된 버전)
+          // 타이핑 효과
           const totalChars = textConfig.text.length;
           const charsToShow = Math.floor((cycleProgress * totalChars) + 1);
           const visibleText = textConfig.text.substring(0, charsToShow);
@@ -155,8 +136,8 @@ export function Preview({ mode, textConfig, imageConfig, bgConfig, displaySize =
           drawText(x, visibleText);
 
           // 커서 표시 (설정이 활성화된 경우)
-          if (animationSettings.typing?.showCursor) {
-            const cursorBlinkSpeed = animationSettings.typing.cursorBlinkSpeed ?? 1;
+          if (textConfig.animationSettings.typing?.showCursor) {
+            const cursorBlinkSpeed = textConfig.animationSettings.typing.cursorBlinkSpeed ?? 1;
             const blinkProgress = (progress * cursorBlinkSpeed / 1000) % 1;
             if (blinkProgress < 0.5) {
               ctx.fillStyle = textConfig.color;
@@ -169,7 +150,7 @@ export function Preview({ mode, textConfig, imageConfig, bgConfig, displaySize =
         }
         
         case 'rotate': {
-          // 회전 효과 (개선된 버전)
+          // 회전 효과
           const fontSize = CANVAS_SIZE * (textConfig.fontSize / 100);
           ctx.font = `bold ${fontSize}px "${textConfig.font}"`;
           const textWidth = ctx.measureText(textConfig.text).width;
@@ -178,7 +159,7 @@ export function Preview({ mode, textConfig, imageConfig, bgConfig, displaySize =
           ctx.translate(CANVAS_SIZE / 2, CANVAS_SIZE / 2);
           
           // 회전 방향과 최대 각도 적용
-          const rotateSettings = animationSettings.rotate;
+          const rotateSettings = textConfig.animationSettings.rotate;
           const maxRotation = (rotateSettings?.maxRotation ?? 360) * Math.PI / 180;
           let rotation = cycleProgress * maxRotation * normalizedIntensity;
           
@@ -196,8 +177,8 @@ export function Preview({ mode, textConfig, imageConfig, bgConfig, displaySize =
         }
         
         case 'shake': {
-          // 진동/떨림 효과 (개선된 버전)
-          const shakeSettings = animationSettings.shake;
+          // 진동/떨림 효과
+          const shakeSettings = textConfig.animationSettings.shake;
           const frequency = shakeSettings?.frequency ?? 10;
           const damping = shakeSettings?.damping ?? 0.1;
           
@@ -215,8 +196,8 @@ export function Preview({ mode, textConfig, imageConfig, bgConfig, displaySize =
         }
         
         case 'bounce': {
-          // 바운스 효과 (개선된 버전)
-          const bounceSettings = animationSettings.bounce;
+          // 바운스 효과
+          const bounceSettings = textConfig.animationSettings.bounce;
           const height = (bounceSettings?.height ?? 50) / 100;
           const elasticity = bounceSettings?.elasticity ?? 0.8;
           
@@ -233,8 +214,8 @@ export function Preview({ mode, textConfig, imageConfig, bgConfig, displaySize =
         }
         
         case 'zoom': {
-          // 줌 인/아웃 효과 (개선된 버전)
-          const zoomSettings = animationSettings.zoom;
+          // 줌 인/아웃 효과
+          const zoomSettings = textConfig.animationSettings.zoom;
           const minScale = (zoomSettings?.minScale ?? 80) / 100;
           const maxScale = (zoomSettings?.maxScale ?? 150) / 100;
           
@@ -254,8 +235,8 @@ export function Preview({ mode, textConfig, imageConfig, bgConfig, displaySize =
         }
         
         case 'fade': {
-          // 페이드 인/아웃 효과 (개선된 버전)
-          const fadeSettings = animationSettings.fade;
+          // 페이드 인/아웃 효과
+          const fadeSettings = textConfig.animationSettings.fade;
           const minOpacity = (fadeSettings?.minOpacity ?? 30) / 100;
           const maxOpacity = (fadeSettings?.maxOpacity ?? 100) / 100;
           
@@ -273,8 +254,8 @@ export function Preview({ mode, textConfig, imageConfig, bgConfig, displaySize =
         }
         
         case 'colorChange': {
-          // 색상 변화 효과 (개선된 버전)
-          const colorSettings = animationSettings.colorChange;
+          // 색상 변화 효과
+          const colorSettings = textConfig.animationSettings.colorChange;
           const colors = colorSettings?.colors ?? ['#ff0000', '#00ff00', '#0000ff'];
           const smooth = colorSettings?.smooth ?? true;
           

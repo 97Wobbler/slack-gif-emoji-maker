@@ -13,9 +13,6 @@ export interface TextConfig {
 }
 
 export interface TextAnimationSettings {
-  duration: number; // 애니메이션 지속시간 (초)
-  repeat: number; // 반복 횟수 (-1: 무한반복)
-  direction: 'normal' | 'reverse' | 'alternate'; // 애니메이션 방향
   // 효과별 세부 설정
   typing?: {
     showCursor: boolean; // 커서 표시 여부

@@ -1,12 +1,6 @@
 import { TextSetting } from './SettingsPanel/TextSetting'
-import { TextAnimationSettingsPanel } from './SettingsPanel/TextAnimationSettings'
-import { TextColorSetting } from './SettingsPanel/TextColorSetting'
-import { FontSizeSetting } from './SettingsPanel/FontSizeSetting'
-import { VerticalOffsetSetting } from './SettingsPanel/VerticalOffsetSetting'
 import { BackgroundSetting } from './SettingsPanel/BackgroundSetting'
 import { ColorRandomizer } from './SettingsPanel/ColorRandomizer'
-import { SpeedSetting } from './SettingsPanel/SpeedSetting'
-import { GapSetting } from './SettingsPanel/GapSetting'
 import { OutputInfo } from './SettingsPanel/OutputInfo'
 import { ExportButton } from './SettingsPanel/ExportButton'
 import { ModeSelector } from './SettingsPanel/ModeSelector'
@@ -101,23 +95,25 @@ export function SettingsPanel({
                   <TextSetting 
                     text={text} 
                     setText={setText}
+                    textColor={textColor}
+                    setTextColor={setTextColor}
+                    fontSize={fontSize}
+                    setFontSize={setFontSize}
+                    verticalOffset={verticalOffset}
+                    setVerticalOffset={setVerticalOffset}
                     animationType={textAnimationType}
                     setAnimationType={setTextAnimationType}
                     animationSpeed={textAnimationSpeed}
                     setAnimationSpeed={setTextAnimationSpeed}
                     animationIntensity={textAnimationIntensity}
                     setAnimationIntensity={setTextAnimationIntensity}
+                    animationSettings={textAnimationSettings}
+                    setAnimationSettings={setTextAnimationSettings}
+                    speed={speed}
+                    setSpeed={setSpeed}
+                    gap={gap}
+                    setGap={setGap}
                   />
-                  <TextAnimationSettingsPanel
-                    animationType={textAnimationType}
-                    settings={textAnimationSettings}
-                    setSettings={setTextAnimationSettings}
-                  />
-                  <TextColorSetting textColor={textColor} setTextColor={setTextColor} />
-                  <FontSizeSetting fontSize={fontSize} setFontSize={setFontSize} />
-                  <VerticalOffsetSetting verticalOffset={verticalOffset} setVerticalOffset={setVerticalOffset} />
-                  <SpeedSetting speed={speed} setSpeed={setSpeed} />
-                  <GapSetting gap={gap} setGap={setGap} />
                 </>
               )}
               
